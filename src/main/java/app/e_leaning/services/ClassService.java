@@ -1,24 +1,25 @@
 package app.e_leaning.services;
 
-import app.e_leaning.models.Class;
+import app.e_leaning.models.Classes;
 import app.e_leaning.models.Department;
 import app.e_leaning.models.Professor;
 import app.e_leaning.models.Student;
-import app.e_leaning.repositories.ClassRepository;
+import app.e_leaning.repositories.ClassesRepository;
 import app.e_leaning.repositories.DepartmentRepository;
 import app.e_leaning.repositories.ProfessorRepository;
 import app.e_leaning.repositories.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
 public class ClassService {
 
     @Autowired
-    private ClassRepository classRepository;
+    private ClassesRepository classesRepository;
 
     @Autowired
     private StudentRepository studentRepository;
@@ -29,71 +30,72 @@ public class ClassService {
     @Autowired
     private ProfessorRepository professorRepository ;
 
-    public Class createClass(Class newClass) {
-        return classRepository.save(newClass);
+    public Classes createClass(Classes newClasses) {
+        return classesRepository.save(newClasses);
     }
 
-    public Optional<Class> getClassById(Long id) {
-        return classRepository.findById(id);
+    public Optional<Classes> getClassById(Long id) {
+        return classesRepository.findById(id);
     }
 
-    public Class updateClass(Long id, Class updatedClass) {
-        return classRepository.findById(id).map(existingClass -> {
-            existingClass.setTitle(updatedClass.getTitle());
-            existingClass.setDescription(updatedClass.getDescription());
-            existingClass.setProfessor(updatedClass.getProfessor());
-            existingClass.setSemester(updatedClass.getSemester());
-            existingClass.setDepartment(updatedClass.getDepartment());
-            return classRepository.save(existingClass);
+    public Classes updateClass(Long id, Classes updatedClasses) {
+        return classesRepository.findById(id).map(existingClass -> {
+            existingClass.setTitle(updatedClasses.getTitle());
+            existingClass.setDescription(updatedClasses.getDescription());
+            existingClass.setProfessor(updatedClasses.getProfessor());
+            existingClass.setSemester(updatedClasses.getSemester());
+            existingClass.setDepartment(updatedClasses.getDepartment());
+            return classesRepository.save(existingClass);
         }).orElseThrow(() -> new RuntimeException("Class not found"));
     }
 
     public void deleteClass(Long id) {
-        classRepository.deleteById(id);
+        classesRepository.deleteById(id);
     }
 
-    public List<Class> getAllClasses() {
-        return classRepository.findAll();
+
+    public Page<Classes> getAllClasses(Pageable pageable) {
+        return classesRepository.findAll(pageable);
     }
 
-    public List<Student> getStudentsInClass(Long classId) {
-        return studentRepository.findByClassId(classId);
+    public Page<Student> getStudentsInClass(Long classId, Pageable pageable) {
+        return studentRepository.findByClassesId(classId,pageable);
     }
 
     public Optional<Professor> getProfessorOfClass(Long classId) {
-        return classRepository.findById(classId).map(Class::getProfessor);
+        return classesRepository.findById(classId).map(Classes::getProfessor);
     }
 
-    public Class addClassToDepartment(Long classId, Long departmentId) {
-        Class classEntity = classRepository.findById(classId).orElseThrow(() -> new RuntimeException("Class not found"));
+    public Classes addClassToDepartment(Long classId, Long departmentId) {
+        Classes classesEntity = classesRepository.findById(classId).orElseThrow(() -> new RuntimeException("Class not found"));
         Department department = departmentRepository.findById(departmentId).orElseThrow(() -> new RuntimeException("Department not found"));
 
-        classEntity.setDepartment((Department) department);
-        return classRepository.save(classEntity);
+        classesEntity.setDepartment((Department) department);
+        return classesRepository.save(classesEntity);
     }
 
     public void enrollStudentInClass(Long classId, Long studentId) {
-        Class classEntity = classRepository.findById(classId).orElseThrow(() -> new RuntimeException("Class not found"));
+        Classes classesEntity = classesRepository.findById(classId).orElseThrow(() -> new RuntimeException("Class not found"));
         Student student = studentRepository.findById(studentId).orElseThrow(() -> new RuntimeException("Student not found"));
 
-        student.getClasses().add(classEntity);
+        student.getClasses().add(classesEntity);
         studentRepository.save(student);
     }
 
     public void removeStudentFromClass(Long classId, Long studentId) {
-        Class classEntity = classRepository.findById(classId).orElseThrow(() -> new RuntimeException("Class not found"));
+        Classes classesEntity = classesRepository.findById(classId).orElseThrow(() -> new RuntimeException("Class not found"));
         Student student = studentRepository.findById(studentId).orElseThrow(() -> new RuntimeException("Student not found"));
 
-        student.getClasses().remove(classEntity);
+        student.getClasses().remove(classesEntity);
         studentRepository.save(student);
     }
 
-    public Class assignProfessorToClass(Long classId, Long professorId) {
-        Class classEntity = classRepository.findById(classId).orElseThrow(() -> new RuntimeException("Class not found"));
+    public Classes assignProfessorToClass(Long classId, Long professorId) {
+        Classes classesEntity = classesRepository.findById(classId).orElseThrow(() -> new RuntimeException("Class not found"));
         Professor professor = professorRepository.findById(professorId).orElseThrow(() -> new RuntimeException("Professor not found"));
 
-        classEntity.setProfessor(professor);
-        return classRepository.save(classEntity);
+        classesEntity.setProfessor(professor);
+        return classesRepository.save(classesEntity);
     }
 
 }

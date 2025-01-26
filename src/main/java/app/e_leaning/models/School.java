@@ -19,7 +19,7 @@ public class School {
     private String name;
 
     @ManyToOne
-    @JoinColumn(name = "university_id", nullable = false)
+    @JoinColumn(name = "universityId", nullable = false)
     private University university;
 
     @OneToMany(mappedBy = "school", cascade = CascadeType.ALL, orphanRemoval = true)

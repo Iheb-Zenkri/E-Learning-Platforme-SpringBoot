@@ -1,15 +1,16 @@
 package app.e_leaning.services;
 
+import app.e_leaning.models.Classes;
 import app.e_leaning.models.Department;
 import app.e_leaning.models.School;
 import app.e_leaning.models.Student;
-import app.e_leaning.models.Class;
-import app.e_leaning.repositories.StudentRepository;
 import app.e_leaning.repositories.DepartmentRepository;
 import app.e_leaning.repositories.SchoolRepository;
+import app.e_leaning.repositories.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -70,7 +71,7 @@ public class StudentService {
         }
     }
 
-    public Student enrollStudentInClasses(Long studentId, List<Class> classes) {
+    public Student enrollStudentInClasses(Long studentId, List<Classes> classes) {
         Optional<Student> student = studentRepository.findById(studentId);
         if (student.isPresent()) {
             student.get().setClasses(classes);
@@ -80,12 +81,12 @@ public class StudentService {
         }
     }
 
-    public List<Student> getStudentsByDepartment(Long departmentId) {
-        return studentRepository.findByDepartmentId(departmentId);
+    public Page<Student> getStudentsByDepartment(Long departmentId, Pageable pageable) {
+        return studentRepository.findByDepartmentId(departmentId,pageable);
     }
 
     // Get all students by school
-    public List<Student> getStudentsBySchool(Long schoolId) {
-        return studentRepository.findBySchoolId(schoolId);
+    public Page<Student> getStudentsBySchool(Long schoolId ,Pageable pageable) {
+        return studentRepository.findBySchoolId(schoolId,pageable);
     }
 }

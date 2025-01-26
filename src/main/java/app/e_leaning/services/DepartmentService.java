@@ -7,9 +7,10 @@ import app.e_leaning.repositories.DepartmentRepository;
 import app.e_leaning.repositories.ProfessorRepository;
 import app.e_leaning.repositories.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -44,16 +45,16 @@ public class DepartmentService {
         departmentRepository.deleteById(id);
     }
 
-    public List<Department> getAllDepartments() {
-        return departmentRepository.findAll();
+    public Page<Department> getAllDepartments(Pageable pageable) {
+        return departmentRepository.findAll(pageable);
     }
 
-    public List<Professor> getProfessorsInDepartment(Long departmentId) {
-        return professorRepository.findByDepartmentId(departmentId);
+    public Page<Professor> getProfessorsInDepartment(Long departmentId, Pageable pageable) {
+        return professorRepository.findByDepartmentId(departmentId,pageable);
     }
 
-    public List<Student> getStudentsInDepartment(Long departmentId) {
-        return studentRepository.findByDepartmentId(departmentId);
+    public Page<Student> getStudentsInDepartment(Long departmentId,Pageable pageable) {
+        return studentRepository.findByDepartmentId(departmentId,pageable);
     }
 
 }

@@ -5,9 +5,9 @@ import app.e_leaning.models.Department;
 import app.e_leaning.repositories.SchoolRepository;
 import app.e_leaning.repositories.DepartmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -38,11 +38,11 @@ public class SchoolService {
         schoolRepository.deleteById(id);
     }
 
-    public List<School> getAllSchools() {
-        return schoolRepository.findAll();
+    public Page<School> getAllSchools(Pageable pageable) {
+        return schoolRepository.findAll(pageable);
     }
 
-    public List<Department> getDepartmentsBySchool(Long schoolId) {
-        return departmentRepository.findBySchoolId(schoolId);
+    public Page<Department> getDepartmentsBySchool(Long schoolId,Pageable pageable) {
+        return departmentRepository.findBySchoolId(schoolId,pageable);
     }
 }

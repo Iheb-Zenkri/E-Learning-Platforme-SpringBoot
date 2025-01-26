@@ -8,8 +8,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface StudentRepository extends JpaRepository<Student, Long> {
-    Page<Student> findAllByPage(Pageable pageable);
     Page<Student> findByDepartmentId(Long departmentId,Pageable pageable);
     Page<Student> findBySchoolId(Long schoolId,Pageable pageable);
-    Page<Student> findByClassId(Long classId,Pageable pageable);
+    Page<Student> findByClassesId(Long classId,Pageable pageable);
 }

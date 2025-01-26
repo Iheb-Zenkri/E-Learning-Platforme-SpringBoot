@@ -16,7 +16,7 @@ public class Department {
     private String name;
 
     @ManyToOne
-    @JoinColumn(name = "school_id")
+    @JoinColumn(name = "schoolId")
     private School school;
 
     @OneToMany(mappedBy = "department")
@@ -26,7 +26,7 @@ public class Department {
     private List<Student> students;
 
     @OneToMany(mappedBy = "department")
-    private List<Class> classes;
+    private List<Classes> classes;
 
     // Getters and Setters
 }

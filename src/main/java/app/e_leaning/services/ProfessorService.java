@@ -1,6 +1,6 @@
 package app.e_leaning.services;
 
-import app.e_leaning.models.Class;
+import app.e_leaning.models.Classes;
 import app.e_leaning.models.Department;
 import app.e_leaning.models.Professor;
 import app.e_leaning.models.School;
@@ -80,7 +80,7 @@ public class ProfessorService {
         return professorRepository.findBySchoolId(schoolId,pageable);
     }
 
-    public List<Class> getClassesTaughtByProfessor(Long professorId) {
+    public List<Classes> getClassesTaughtByProfessor(Long professorId) {
         Optional<Professor> professor = professorRepository.findById(professorId);
         if (professor.isPresent()) {
             return professor.get().getClasses();

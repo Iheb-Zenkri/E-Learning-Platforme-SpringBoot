@@ -7,7 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface SchoolRepository extends JpaRepository<School, Long> {
-    Page<School> findAllByPage(Pageable pageable);
-    Page<School> findByUniversityId(Long universityId,Pageable pageable);
+public interface SchoolRepository extends JpaRepository<School, Long> { Page<School> findByUniversityId(Long universityId,Pageable pageable);
 }

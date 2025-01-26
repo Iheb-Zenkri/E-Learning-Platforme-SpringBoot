@@ -15,17 +15,17 @@ public class Professor {
     private Long id;
 
     @OneToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @JoinColumn(name = "userId", referencedColumnName = "id")
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "department_id", nullable = false)
+    @JoinColumn(name = "departmentId", nullable = false)
     private Department department;
 
     @ManyToOne
-    @JoinColumn(name = "school_id", nullable = false)
+    @JoinColumn(name = "schoolId", nullable = false)
     private School school;
 
     @OneToMany(mappedBy = "professor")
-    private List<Class> classes;
+    private List<Classes> classes;
 }
