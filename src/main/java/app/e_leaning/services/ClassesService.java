@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public class ClassService {
+public class ClassesService {
 
     @Autowired
     private ClassesRepository classesRepository;
