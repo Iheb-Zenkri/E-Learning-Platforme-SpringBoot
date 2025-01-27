@@ -3,6 +3,7 @@ package app.e_leaning.services;
 import app.e_leaning.models.User;
 import app.e_leaning.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -11,9 +12,17 @@ import java.util.Optional;
 public class UserService {
 
     @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
     private UserRepository userRepository;
 
     public User registerUser(User user) {
+        if (user.getRole() == null) {
+            user.setRole(User.Role.Student); // Set default role if none provided
+        }
+        String hashedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(hashedPassword);
         return userRepository.save(user);
     }
     public Optional<User> getUserById(Long id) {
@@ -36,7 +45,7 @@ public class UserService {
             user.setActive(updatedUser.isActive());
             // you can add additional fields to update here
             return userRepository.save(user);
-        }).orElseThrow(() -> new RuntimeException("User not found"));
+        }).orElse(updatedUser);
     }
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
@@ -45,7 +54,7 @@ public class UserService {
         return userRepository.findById(id).map(user -> {
             user.setActive(isActive);
             return userRepository.save(user);
-        }).orElseThrow(() -> new RuntimeException("User not found"));
+        }).orElse(new User());
     }
     public boolean emailExists(String email) {
         return userRepository.findByEmail(email).isPresent();
@@ -55,10 +64,15 @@ public class UserService {
     }
     public boolean authenticateUser(String username, String password) {
 
-        // Implement authentication logic (e.g., compare password, check JWT, etc.)
-        Optional<User> user = userRepository.findByUsername(username);
+        Optional<User> userOptional = userRepository.findByUsername(username);
 
-        // Example, use bcrypt or similar for secure password handling
-        return user.map(value -> value.getPassword().equals(password)).orElse(false);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+
+            // Compare the provided password with the stored hash
+            return passwordEncoder.matches(password, user.getPassword());
+        }
+
+        return false;
     }
 }
