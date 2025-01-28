@@ -18,14 +18,6 @@ public class Student {
     @JoinColumn(name = "userId", referencedColumnName = "id")
     private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "departmentId", nullable = false)
-    private Department department;
-
-    @ManyToOne
-    @JoinColumn(name = "schoolId", nullable = false)
-    private School school;
-
     @ManyToMany
     @JoinTable(
             name = "student_class",

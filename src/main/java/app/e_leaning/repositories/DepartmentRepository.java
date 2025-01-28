@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface DepartmentRepository extends JpaRepository<Department, Long> {
-    Page<Department> findBySchoolId(Long schoolId,Pageable pageable);
+    Page<Department> findByUniversityId(Long universityId, Pageable pageable);
 }

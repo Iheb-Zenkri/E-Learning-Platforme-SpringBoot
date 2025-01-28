@@ -1,7 +1,8 @@
 package app.e_leaning.models;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 import java.util.List;
@@ -15,12 +16,19 @@ public class University {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotEmpty(message = "University name is required")
+    @NotBlank(message = "University name is required")
+    @Size(max = 255)
     private String name;
 
+    @NotBlank(message = "University address is required")
+    @Size(max = 255)
     private String address;
 
-    @OneToMany(mappedBy = "university", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<School> schools;
+    @OneToMany
+    @JoinColumn(name = "userId", referencedColumnName = "id")
+    private List<Administration> administrations;
+
+    @OneToMany(mappedBy = "university", cascade = CascadeType.ALL)
+    private List<Department> departments;
 
 }

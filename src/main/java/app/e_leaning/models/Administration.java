@@ -3,12 +3,10 @@ package app.e_leaning.models;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.util.List;
-
 @Data
 @Entity
-@Table(name = "professor")
-public class Professor {
+@Table(name = "administration")
+public class Administration {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,6 +16,7 @@ public class Professor {
     @JoinColumn(name = "userId", referencedColumnName = "id")
     private User user;
 
-    @OneToMany(mappedBy = "professor")
-    private List<Classes> classes;
+    @ManyToOne
+    @JoinColumn(name = "universityId", nullable = false)
+    private University university;
 }

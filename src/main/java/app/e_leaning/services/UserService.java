@@ -14,12 +14,15 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     public User registerUser(User user) {
         if (user.getRole() == null) {
-            user.setRole(User.Role.Student); // Set default role if none provided
+            user.setRole(User.Role.Student);
         }
         String hashedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(hashedPassword);
@@ -35,7 +38,6 @@ public class UserService {
         return userRepository.findByEmail(email);
     }
     public User updateUser(Long id, User updatedUser) {
-        // Fetch user, update fields, and save
         return userRepository.findById(id).map(user -> {
             user.setUsername(updatedUser.getUsername());
             user.setEmail(updatedUser.getEmail());
@@ -68,8 +70,6 @@ public class UserService {
 
         if (userOptional.isPresent()) {
             User user = userOptional.get();
-
-            // Compare the provided password with the stored hash
             return passwordEncoder.matches(password, user.getPassword());
         }
 

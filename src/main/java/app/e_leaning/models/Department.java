@@ -1,5 +1,6 @@
 package app.e_leaning.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -15,15 +16,10 @@ public class Department {
 
     private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "schoolId")
-    private School school;
-
-    @OneToMany(mappedBy = "department")
-    private List<Professor> professors;
-
-    @OneToMany(mappedBy = "department")
-    private List<Student> students;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "universityId")
+    @JsonIgnore
+    private University university;
 
     @OneToMany(mappedBy = "department")
     private List<Classes> classes;

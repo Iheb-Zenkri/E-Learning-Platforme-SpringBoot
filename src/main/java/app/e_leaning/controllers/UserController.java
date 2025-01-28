@@ -5,18 +5,24 @@ import app.e_leaning.dtos.UserRegistrationDTO;
 import app.e_leaning.models.User;
 import app.e_leaning.services.UserService;
 import app.e_leaning.utils.UserMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/users")
+@Tag(name = "User Management", description = "Endpoints for managing users")
+@Validated
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @PostMapping("/register")
     public ResponseEntity<UserDTO> registerUser(@RequestBody UserRegistrationDTO userDTO) {

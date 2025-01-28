@@ -1,49 +1,95 @@
 package app.e_leaning.services;
 
+import app.e_leaning.dtos.DepartmentDTO;
+import app.e_leaning.dtos.UniversityDTO;
+import app.e_leaning.exceptions.ObjectNotFoundException;
+import app.e_leaning.models.Department;
 import app.e_leaning.models.University;
-import app.e_leaning.models.School;
+import app.e_leaning.repositories.DepartmentRepository;
 import app.e_leaning.repositories.UniversityRepository;
-import app.e_leaning.repositories.SchoolRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import app.e_leaning.utils.DepartmentMapper;
+import app.e_leaning.utils.UniversityMapper;
+import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import java.util.Optional;
+
+import static app.e_leaning.utils.UniversityMapper.toUniversityDTO;
 
 @Service
+@Slf4j
 public class UniversityService {
 
-    @Autowired
-    private UniversityRepository universityRepository;
+    private final UniversityRepository universityRepository;
+    private final DepartmentRepository departmentRepository;
 
-    @Autowired
-    private SchoolRepository schoolRepository;
+    public UniversityService(UniversityRepository universityRepository, DepartmentRepository departmentRepository) {
+        this.universityRepository = universityRepository;
+        this.departmentRepository = departmentRepository;
+    }
 
     public University createUniversity(University university) {
         return universityRepository.save(university);
     }
 
-    public Optional<University> getUniversityById(Long id) {
-        return universityRepository.findById(id);
+    public UniversityDTO getUniversityById(Long id) {
+        return universityRepository.findById(id).map(UniversityMapper::toUniversityDTO
+        ).orElseThrow(()-> new ObjectNotFoundException("University not found with id: "+id));
     }
 
-    public University updateUniversity(Long id, University updatedUniversity) {
+    public UniversityDTO updateUniversity(Long id, UniversityDTO updatedDTO) {
         return universityRepository.findById(id).map(university -> {
-            university.setName(updatedUniversity.getName());
-            university.setAddress(updatedUniversity.getAddress());
+            university.setName(updatedDTO.getName());
+            university.setAddress(updatedDTO.getAddress());
+            University updatedUniversity = universityRepository.save(university);
+            return toUniversityDTO(updatedUniversity);
+        }).orElseThrow(() -> new ObjectNotFoundException("University not found with id: "+id));
+    }
+
+    @Transactional
+    public boolean deleteUniversity(Long id) {
+        if (!universityRepository.existsById(id)) {
+            throw new ObjectNotFoundException("University not found with ID: " + id);
+        }
+        try {
+            universityRepository.deleteById(id);
+            return !universityRepository.existsById(id);
+        } catch (Exception e) {
+            throw new RuntimeException("Error occurred while deleting the university", e);
+        }
+    }
+
+    public Page<UniversityDTO> getAllUniversities(Pageable pageable) {
+        return universityRepository.findAll(pageable).map(UniversityMapper::toUniversityDTO);
+    }
+
+    public Page<DepartmentDTO> getDepartmentByUniversity(Long universityId, Pageable pageable) {
+        return departmentRepository.findByUniversityId(universityId,pageable).map(DepartmentMapper::toDepartmentDTO);
+    }
+
+    @Transactional
+    public University addDepartementToUniversity(Long universityId, Long departmentId) {
+        return universityRepository.findById(universityId).map(university -> {
+            Department newDepartment = departmentRepository.findById(departmentId)
+                    .orElseThrow(() -> new ObjectNotFoundException("Department with id "+departmentId+" not found."));
+            newDepartment.setUniversity(university);
+            university.getDepartments().add(newDepartment);
             return universityRepository.save(university);
-        }).orElseThrow(() -> new RuntimeException("University not found"));
+        }).orElseThrow(() -> new ObjectNotFoundException("University not found with ID: " + universityId));
     }
 
-    public void deleteUniversity(Long id) {
-        universityRepository.deleteById(id);
+    @Transactional
+    public University removeDepartementFromUniversity(Long universityId, Long departmentId) {
+        return universityRepository.findById(universityId).map(university -> {
+            Department departmentToRemove = university.getDepartments().stream()
+                    .filter(department -> department.getId().equals(departmentId))
+                    .findFirst()
+                    .orElseThrow(() -> new ObjectNotFoundException("Department not found with ID: " + departmentId));
+            departmentToRemove.setUniversity(null);
+            university.getDepartments().remove(departmentToRemove);
+            return universityRepository.save(university);
+        }).orElseThrow(() -> new ObjectNotFoundException("University not found with ID: " + universityId));
     }
 
-    public Page<University> getAllUniversities(Pageable pageable) {
-        return universityRepository.findAll(pageable);
-    }
-
-    public Page<School> getSchoolsByUniversity(Long universityId,Pageable pageable) {
-        return schoolRepository.findByUniversityId(universityId,pageable);
-    }
 }
