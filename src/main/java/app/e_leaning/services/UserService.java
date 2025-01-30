@@ -1,6 +1,11 @@
 package app.e_leaning.services;
 
+import app.e_leaning.exceptions.ObjectNotFoundException;
+import app.e_leaning.models.Professor;
+import app.e_leaning.models.Student;
 import app.e_leaning.models.User;
+import app.e_leaning.repositories.ProfessorRepository;
+import app.e_leaning.repositories.StudentRepository;
 import app.e_leaning.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,9 +20,13 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
 
     private final UserRepository userRepository;
-
-    public UserService(UserRepository userRepository) {
+    private final ProfessorRepository professorRepository ;
+    private final StudentRepository studentRepository ;
+    public UserService(PasswordEncoder passwordEncoder, UserRepository userRepository, ProfessorRepository professorRepository, StudentRepository studentRepository) {
+        this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
+        this.professorRepository = professorRepository;
+        this.studentRepository = studentRepository;
     }
 
     public User registerUser(User user) {
@@ -49,12 +58,28 @@ public class UserService {
             return userRepository.save(user);
         }).orElse(updatedUser);
     }
-    public void deleteUser(Long id) {
-        userRepository.deleteById(id);
+    public boolean deleteUser(Long id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException("User with id "+id+" not found"));
+        if(user.getRole().name().equals("GLOBAL_ADMIN")){
+            userRepository.deleteById(id);
+            return !userRepository.existsById(id);
+        }
+        return userRepository.existsById(id) ;
     }
     public User activateDeactivateUser(Long id, boolean isActive) {
         return userRepository.findById(id).map(user -> {
             user.setActive(isActive);
+            if(isActive){
+                if(user.getRole().name().equals("Professor")){
+                    Professor professor = new Professor();
+                    professor.setUser(user);
+                    professorRepository.save(professor);
+                }else if(user.getRole().name().equals("Student")) {
+                    Student student = new Student();
+                    student.setUser(user);
+                    studentRepository.save(student);
+                }
+            }
             return userRepository.save(user);
         }).orElse(new User());
     }

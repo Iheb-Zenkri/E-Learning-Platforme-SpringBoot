@@ -13,7 +13,7 @@ public class UserMapper {
         dto.setFirstName(user.getFirstName());
         dto.setLastName(user.getLastName());
         dto.setRole(user.getRole());
-        dto.setActive(user.isActive());
+        dto.setLastLogin(user.getLastLogin());
         return dto;
     }
 
@@ -25,7 +25,6 @@ public class UserMapper {
         user.setFirstName(dto.getFirstName());
         user.setLastName(dto.getLastName());
         user.setRole(dto.getRole());
-        user.setActive(dto.isActive());
         return user;
     }
 
@@ -33,9 +32,10 @@ public class UserMapper {
         User user = new User();
         user.setUsername(registrationDTO.getUsername());
         user.setEmail(registrationDTO.getEmail());
-        user.setPassword(registrationDTO.getPassword()); // Handle hashing in service
+        user.setPassword(registrationDTO.getPassword());
         user.setFirstName(registrationDTO.getFirstName());
         user.setLastName(registrationDTO.getLastName());
+        user.setRole(registrationDTO.getRole());
         return user;
     }
 }

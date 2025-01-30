@@ -35,8 +35,8 @@ public class User {
     private boolean isActive;
 
     public enum Role {
-        SUPER_ADMIN,
-        UNIVERSITY_ADMIN,
+            GLOBAL_ADMIN,
+        Administration,
         Professor,
         Student,
     }

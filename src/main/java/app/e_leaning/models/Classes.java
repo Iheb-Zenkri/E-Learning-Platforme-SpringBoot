@@ -7,7 +7,7 @@ import java.util.List;
 
 @Data
 @Entity
-@Table(name = "class")
+@Table(name = "classes")
 public class Classes {
 
     @Id
@@ -17,14 +17,14 @@ public class Classes {
     @Column(nullable = false)
     private String title;
 
-    private String description;
+    private String subject;
 
     @ManyToOne
-    @JoinColumn(name = "departmentId", nullable = false)
+    @JoinColumn(name = "departmentId")
     private Department department;
 
     @ManyToOne
-    @JoinColumn(name = "professorId", nullable = false)
+    @JoinColumn(name = "professorId")
     private Professor professor;
 
     @ManyToMany(mappedBy = "classes")

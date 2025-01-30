@@ -2,6 +2,7 @@ package app.e_leaning.utils;
 
 import app.e_leaning.dtos.StudentDTO;
 import app.e_leaning.models.Student;
+import app.e_leaning.models.User;
 
 public class StudentMapper {
     public static StudentDTO toStudentDTO(Student student){
@@ -10,15 +11,19 @@ public class StudentMapper {
         dto.setEmail(student.getUser().getEmail());
         dto.setFirstName(student.getUser().getFirstName());
         dto.setLastName(student.getUser().getLastName());
+        dto.setLastLogin(student.getUser().getLastLogin());
         return dto;
     }
 
     public static Student toStudentEntity(StudentDTO dto){
         Student student = new Student();
         student.setId(dto.getId());
-        student.getUser().setFirstName(dto.getFirstName());
-        student.getUser().setLastName(dto.getLastName());
-        student.getUser().setEmail(dto.getEmail());
+        User user = new User();
+        user.setFirstName(dto.getFirstName());
+        user.setLastName(dto.getLastName());
+        user.setEmail(dto.getEmail());
+
+        student.setUser(user);
         return student ;
     }
 }
