@@ -3,7 +3,6 @@ package app.e_leaning.controllers;
 import app.e_leaning.dtos.DepartmentDTO;
 import app.e_leaning.models.Department;
 import app.e_leaning.services.DepartmentService;
-import app.e_leaning.utils.DepartmentMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -13,8 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import static app.e_leaning.utils.DepartmentMapper.toDepartmentDTO;
-import static app.e_leaning.utils.DepartmentMapper.toDepartmentEntity;
+import static app.e_leaning.dtos.DepartmentDTO.*;
 
 @RestController
 @RequestMapping("/api/departments")
@@ -39,7 +37,7 @@ public class DepartmentController {
     @GetMapping
     public ResponseEntity<Page<DepartmentDTO>> getAllDepartments(Pageable pageable){
         Page<Department> departmentDTOS = departmentService.getAllDepartments(pageable);
-        return ResponseEntity.ok(departmentDTOS.map(DepartmentMapper::toDepartmentDTO));
+        return ResponseEntity.ok(departmentDTOS.map(DepartmentDTO::toDepartmentDTO));
     }
 
     @Operation(summary = "Get a department by ID", description = "Retrieve a department by its unique ID.")

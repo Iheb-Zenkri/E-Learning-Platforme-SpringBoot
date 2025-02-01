@@ -7,15 +7,13 @@ import app.e_leaning.models.Department;
 import app.e_leaning.models.University;
 import app.e_leaning.repositories.DepartmentRepository;
 import app.e_leaning.repositories.UniversityRepository;
-import app.e_leaning.utils.DepartmentMapper;
-import app.e_leaning.utils.UniversityMapper;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import static app.e_leaning.utils.UniversityMapper.toUniversityDTO;
+import static app.e_leaning.dtos.UniversityDTO.toUniversityDTO;
 
 @Service
 @Slf4j
@@ -34,7 +32,7 @@ public class UniversityService {
     }
 
     public UniversityDTO getUniversityById(Long id) {
-        return universityRepository.findById(id).map(UniversityMapper::toUniversityDTO
+        return universityRepository.findById(id).map(UniversityDTO::toUniversityDTO
         ).orElseThrow(()-> new ObjectNotFoundException("University not found with id: "+id));
     }
 
@@ -61,11 +59,11 @@ public class UniversityService {
     }
 
     public Page<UniversityDTO> getAllUniversities(Pageable pageable) {
-        return universityRepository.findAll(pageable).map(UniversityMapper::toUniversityDTO);
+        return universityRepository.findAll(pageable).map(UniversityDTO::toUniversityDTO);
     }
 
     public Page<DepartmentDTO> getDepartmentByUniversity(Long universityId, Pageable pageable) {
-        return departmentRepository.findByUniversityId(universityId,pageable).map(DepartmentMapper::toDepartmentDTO);
+        return departmentRepository.findByUniversityId(universityId,pageable).map(DepartmentDTO::toDepartmentDTO);
     }
 
     @Transactional

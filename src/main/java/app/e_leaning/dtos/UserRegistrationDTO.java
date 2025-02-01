@@ -11,4 +11,15 @@ public class UserRegistrationDTO {
     private String firstName;
     private String lastName;
     private User.Role role ;
+
+    public static User toEntity(UserRegistrationDTO registrationDTO) {
+        User user = new User();
+        user.setUsername(registrationDTO.getUsername());
+        user.setEmail(registrationDTO.getEmail());
+        user.setPassword(registrationDTO.getPassword());
+        user.setFirstName(registrationDTO.getFirstName());
+        user.setLastName(registrationDTO.getLastName());
+        user.setRole(registrationDTO.getRole());
+        return user;
+    }
 }

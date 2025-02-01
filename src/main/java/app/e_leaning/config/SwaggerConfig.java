@@ -1,7 +1,15 @@
 package app.e_leaning.config;
 
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
-import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
+import org.springframework.context.annotation.Bean;
 
-@OpenAPIDefinition(info = @Info(title = "E-Learning API", version = "1.0", description = "API for managing universities"))
-public class SwaggerConfig {}
+public class SwaggerConfig {
+    @Bean
+    public OpenAPI customOpenAPI() {
+        return new OpenAPI()
+                .info(new Info().title("E-Learning API")
+                        .version("1.0")
+                        .description("API documentation for managing E-Learning platform"));
+    }
+}

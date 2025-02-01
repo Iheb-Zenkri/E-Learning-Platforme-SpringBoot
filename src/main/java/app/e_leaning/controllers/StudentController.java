@@ -4,7 +4,6 @@ import app.e_leaning.dtos.ClassesDTO;
 import app.e_leaning.dtos.StudentDTO;
 import app.e_leaning.models.Student;
 import app.e_leaning.services.StudentService;
-import app.e_leaning.utils.ClassesMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,12 +12,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static app.e_leaning.utils.StudentMapper.toStudentDTO;
-import static app.e_leaning.utils.StudentMapper.toStudentEntity;
-
+import static app.e_leaning.dtos.StudentDTO.*;
 @RestController
 @RequestMapping("/api/students")
-@Tag(name = "Student Management", description = "APIs for managing students")
+@Tag(name = "Student Management", description = "Endpoints for managing students")
 public class StudentController {
 
     private final StudentService studentService;
@@ -52,7 +49,7 @@ public class StudentController {
     @Operation(summary = "Get all classes for a student")
     @GetMapping("/{id}/classes")
     public ResponseEntity<List<ClassesDTO>> getStudentClasses(@PathVariable Long id) {
-        List<ClassesDTO> classes = studentService.getStudentClasses(id).stream().map(ClassesMapper::toClassesDTO).toList();
+        List<ClassesDTO> classes = studentService.getStudentClasses(id).stream().map(ClassesDTO::toClassesDTO).toList();
         return ResponseEntity.ok(classes);
     }
 

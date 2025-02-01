@@ -1,4 +1,4 @@
-package app.e_leaning.utils;
+package app.e_leaning.services;
 
 import app.e_leaning.models.User;
 import app.e_leaning.repositories.UserRepository;

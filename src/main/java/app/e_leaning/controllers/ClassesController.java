@@ -9,8 +9,6 @@ import app.e_leaning.models.Classes;
 import app.e_leaning.models.Department;
 import app.e_leaning.models.Professor;
 import app.e_leaning.services.ClassesService;
-import app.e_leaning.utils.ClassesMapper;
-import app.e_leaning.utils.StudentMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -20,10 +18,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import static app.e_leaning.utils.ClassesMapper.toClassesDTO;
-import static app.e_leaning.utils.ClassesMapper.toClassesEntity;
-import static app.e_leaning.utils.DepartmentMapper.toDepartmentDTO;
-import static app.e_leaning.utils.ProfessorMapper.toProfessorDTO;
+import static app.e_leaning.dtos.ClassesDTO.*;
+import static app.e_leaning.dtos.DepartmentDTO.*;
 
 @RestController
 @RequestMapping("/api/classes")
@@ -65,20 +61,20 @@ public class ClassesController {
 
     @GetMapping
     public ResponseEntity<Page<ClassesDTO>> getAllClasses(Pageable pageable) {
-        Page<ClassesDTO> classes = classesService.getAllClasses(pageable).map(ClassesMapper::toClassesDTO);
+        Page<ClassesDTO> classes = classesService.getAllClasses(pageable).map(ClassesDTO::toClassesDTO);
         return ResponseEntity.ok(classes);
     }
 
     @GetMapping("/{classId}/students")
     public ResponseEntity<Page<StudentDTO>> getStudentsInClass(@PathVariable Long classId, Pageable pageable) {
-        Page<StudentDTO> students = classesService.getStudentsInClass(classId, pageable).map(StudentMapper::toStudentDTO);
+        Page<StudentDTO> students = classesService.getStudentsInClass(classId, pageable).map(StudentDTO::toStudentDTO);
         return ResponseEntity.ok(students);
     }
 
     @GetMapping("/{classId}/professor")
     public ResponseEntity<ProfessorDTO> getProfessorOfClass(@PathVariable Long classId) {
         Professor professor = classesService.getProfessorOfClass(classId);
-        return ResponseEntity.ok(toProfessorDTO(professor));
+        return ResponseEntity.ok(ProfessorDTO.toProfessorDTO(professor));
     }
     
     @GetMapping("/{classId}/department")
