@@ -10,7 +10,7 @@ public abstract class BaseFileEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    private String mimeType;
     private String fileName;
     private String filePath;
     private Long size;

@@ -1,6 +1,11 @@
 package app.e_leaning.repositories;
 
 import app.e_leaning.models.ImageFile;
+import app.e_leaning.models.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ImageRepository extends JpaRepository<ImageFile, Long> {}
+import java.util.List;
+
+public interface ImageRepository extends JpaRepository<ImageFile, Long> {
+    List<ImageFile> findByPost(Post post);
+}
